@@ -10,7 +10,65 @@ const Index = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [searchCity, setSearchCity] = useState("Москва");
   const [lastUpdated, setLastUpdated] = useState(new Date());
-  const [weatherData, setWeatherData] = useState({});
+  const [weatherData, setWeatherData] = useState({
+    current: {
+      temp: 18,
+      condition: "Дождь",
+      humidity: 85,
+      windSpeed: 12,
+      pressure: 1013,
+      visibility: 8,
+      uvIndex: 2,
+      feelsLike: 16,
+    },
+    forecast: [
+      {
+        day: "Сегодня",
+        temp: "18°",
+        condition: "Дождь",
+        icon: "CloudRain",
+        chance: 90,
+      },
+      {
+        day: "Завтра",
+        temp: "22°",
+        condition: "Облачно",
+        icon: "Cloud",
+        chance: 30,
+      },
+      {
+        day: "Ср",
+        temp: "25°",
+        condition: "Солнечно",
+        icon: "Sun",
+        chance: 10,
+      },
+      { day: "Чт", temp: "20°", condition: "Гроза", icon: "Zap", chance: 95 },
+      {
+        day: "Пт",
+        temp: "16°",
+        condition: "Дождь",
+        icon: "CloudRain",
+        chance: 80,
+      },
+      {
+        day: "Сб",
+        temp: "19°",
+        condition: "Переменная",
+        icon: "CloudSun",
+        chance: 45,
+      },
+      { day: "Вс", temp: "23°", condition: "Ясно", icon: "Sun", chance: 5 },
+    ],
+    hourly: [
+      { time: "12:00", temp: 18, rain: 80 },
+      { time: "13:00", temp: 17, rain: 85 },
+      { time: "14:00", temp: 16, rain: 90 },
+      { time: "15:00", temp: 18, rain: 75 },
+      { time: "16:00", temp: 19, rain: 60 },
+      { time: "17:00", temp: 20, rain: 40 },
+    ],
+  });
 
   // Auto-refresh every minute
   useEffect(() => {
@@ -27,7 +85,7 @@ const Index = () => {
         ...prev,
         current: {
           ...prev.current,
-          temp: prev.current.temp + (Math.random() - 0.5) * 2, // Small temperature fluctuation
+          temp: prev.current.temp + (Math.random() - 0.5) * 2,
           humidity: Math.max(
             70,
             Math.min(95, prev.current.humidity + (Math.random() - 0.5) * 5),
@@ -39,7 +97,7 @@ const Index = () => {
         },
       }));
       setLastUpdated(new Date());
-    }, 60000); // Update every minute
+    }, 60000);
 
     return () => clearInterval(dataTimer);
   }, []);
@@ -104,7 +162,6 @@ const Index = () => {
       );
     }
 
-    // Regular drop
     return (
       <div
         className="absolute animate-raindrop"
@@ -139,99 +196,41 @@ const Index = () => {
     return `${diffMinutes} мин назад`;
   };
 
-  const mockWeatherData = weatherData || {
-    current: {
-      temp: 18,
-      condition: "Дождь",
-      humidity: 85,
-      windSpeed: 12,
-      pressure: 1013,
-      visibility: 8,
-      uvIndex: 2,
-      feelsLike: 16,
-    },
-    forecast: [
-      {
-        day: "Сегодня",
-        temp: "18°",
-        condition: "Дождь",
-        icon: "CloudRain",
-        chance: 90,
-      },
-      {
-        day: "Завтра",
-        temp: "22°",
-        condition: "Облачно",
-        icon: "Cloud",
-        chance: 30,
-      },
-      {
-        day: "Ср",
-        temp: "25°",
-        condition: "Солнечно",
-        icon: "Sun",
-        chance: 10,
-      },
-      { day: "Чт", temp: "20°", condition: "Гроза", icon: "Zap", chance: 95 },
-      {
-        day: "Пт",
-        temp: "16°",
-        condition: "Дождь",
-        icon: "CloudRain",
-        chance: 80,
-      },
-      {
-        day: "Сб",
-        temp: "19°",
-        condition: "Переменная",
-        icon: "CloudSun",
-        chance: 45,
-      },
-      { day: "Вс", temp: "23°", condition: "Ясно", icon: "Sun", chance: 5 },
-    ],
-    hourly: [
-      { time: "12:00", temp: 18, rain: 80 },
-      { time: "13:00", temp: 17, rain: 85 },
-      { time: "14:00", temp: 16, rain: 90 },
-      { time: "15:00", temp: 18, rain: 75 },
-      { time: "16:00", temp: 19, rain: 60 },
-      { time: "17:00", temp: 20, rain: 40 },
-    ],
-  };
-
-  const Raindrop = ({
-    delay,
-    duration,
-  }: {
-    delay: number;
-    duration: number;
-  }) => (
-    <div
-      className="absolute w-1 h-8 bg-gradient-to-b from-rainBlue to-transparent rounded-full opacity-70"
-      style={{
-        left: `${Math.random() * 100}%`,
-        animationDelay: `${delay}s`,
-        animationDuration: `${duration}s`,
-      }}
-    />
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-stormGray via-rainBlue to-cloudWhite relative overflow-hidden">
-      {/* Animated Rain Effect */}
+      {/* Glass Effect Overlay */}
+      <div className="fixed inset-0 bg-gradient-to-b from-transparent via-white/5 to-white/10 pointer-events-none" />
+
+      {/* Realistic Rain Effect */}
       <div className="fixed inset-0 pointer-events-none">
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute animate-raindrop"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 2}s`,
-            }}
-          >
-            <div className="w-0.5 h-6 bg-gradient-to-b from-blue-300 to-transparent rounded-full opacity-60" />
-          </div>
+        {/* Streaks */}
+        {[...Array(20)].map((_, i) => (
+          <RealisticRaindrop
+            key={`streak-${i}`}
+            delay={Math.random() * 3}
+            duration={2.5 + Math.random() * 1.5}
+            type="streak"
+          />
+        ))}
+
+        {/* Glass drips */}
+        {[...Array(15)].map((_, i) => (
+          <RealisticRaindrop
+            key={`drip-${i}`}
+            delay={Math.random() * 6}
+            duration={4 + Math.random() * 4}
+            type="drip"
+          />
+        ))}
+
+        {/* Regular drops */}
+        {[...Array(30)].map((_, i) => (
+          <RealisticRaindrop
+            key={`drop-${i}`}
+            delay={Math.random() * 4}
+            duration={3 + Math.random() * 2}
+            type="drop"
+          />
         ))}
       </div>
 
@@ -282,14 +281,19 @@ const Index = () => {
                       <span className="text-lg">{searchCity}</span>
                       <Badge
                         variant="secondary"
-                        className="bg-white/20 text-white"
+                        className="bg-white/20 text-white flex items-center space-x-1"
                       >
-                        Обновлено {currentTime.toLocaleTimeString()}
+                        <Icon
+                          name="RefreshCw"
+                          size={12}
+                          className="animate-spin"
+                        />
+                        <span>{getTimeSinceUpdate()}</span>
                       </Badge>
                     </div>
                     <div className="flex items-baseline space-x-2 mb-2">
                       <span className="text-6xl font-light">
-                        {mockWeatherData.current.temp}°
+                        {Math.round(weatherData.current.temp)}°
                       </span>
                       <span className="text-xl text-white/80">C</span>
                     </div>
@@ -300,37 +304,44 @@ const Index = () => {
                         className="text-white/80"
                       />
                       <span className="text-xl">
-                        {mockWeatherData.current.condition}
+                        {weatherData.current.condition}
                       </span>
                     </div>
                     <p className="text-white/80">
-                      Ощущается как {mockWeatherData.current.feelsLike}°C
+                      Ощущается как {weatherData.current.feelsLike}°C
                     </p>
+                    <div className="mt-4 text-xs text-white/60">
+                      Последнее обновление: {lastUpdated.toLocaleTimeString()} •
+                      Автообновление каждую минуту
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     {[
                       {
                         icon: "Droplets",
                         label: "Влажность",
-                        value: `${mockWeatherData.current.humidity}%`,
+                        value: `${Math.round(weatherData.current.humidity)}%`,
                       },
                       {
                         icon: "Wind",
                         label: "Ветер",
-                        value: `${mockWeatherData.current.windSpeed} км/ч`,
+                        value: `${Math.round(weatherData.current.windSpeed)} км/ч`,
                       },
                       {
                         icon: "Gauge",
                         label: "Давление",
-                        value: `${mockWeatherData.current.pressure} мбар`,
+                        value: `${weatherData.current.pressure} мбар`,
                       },
                       {
                         icon: "Eye",
                         label: "Видимость",
-                        value: `${mockWeatherData.current.visibility} км`,
+                        value: `${weatherData.current.visibility} км`,
                       },
                     ].map((item, index) => (
-                      <div key={index} className="bg-white/10 rounded-lg p-4">
+                      <div
+                        key={index}
+                        className="bg-white/10 rounded-lg p-4 backdrop-blur-sm"
+                      >
                         <div className="flex items-center space-x-2 mb-2">
                           <Icon
                             name={item.icon as any}
@@ -356,17 +367,22 @@ const Index = () => {
           <div className="mb-8">
             <Card className="bg-white/15 backdrop-blur-lg border-white/20">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Icon name="Clock" size={20} className="mr-2" />
-                  Почасовой прогноз
+                <CardTitle className="text-white flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Icon name="Clock" size={20} className="mr-2" />
+                    Почасовой прогноз
+                  </div>
+                  <div className="text-sm font-normal text-white/70">
+                    Обновлено {currentTime.toLocaleTimeString()}
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex space-x-4 overflow-x-auto pb-4">
-                  {mockWeatherData.hourly.map((hour, index) => (
+                  {weatherData.hourly.map((hour, index) => (
                     <div
                       key={index}
-                      className="flex-shrink-0 bg-white/10 rounded-lg p-4 text-center min-w-[100px]"
+                      className="flex-shrink-0 bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center min-w-[100px]"
                     >
                       <p className="text-white/80 text-sm mb-2">{hour.time}</p>
                       <Icon
@@ -402,10 +418,10 @@ const Index = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {mockWeatherData.forecast.map((day, index) => (
+                  {weatherData.forecast.map((day, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+                      className="flex items-center justify-between p-3 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors"
                     >
                       <div className="flex items-center space-x-4">
                         <span className="text-white font-medium w-16">
@@ -444,13 +460,21 @@ const Index = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <Card className="bg-white/15 backdrop-blur-lg border-white/20">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <Icon name="Radar" size={20} className="mr-2" />
-                  Радар осадков
+                <CardTitle className="text-white flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Icon name="Radar" size={20} className="mr-2" />
+                    Радар осадков
+                  </div>
+                  <Badge
+                    variant="secondary"
+                    className="bg-green-500/20 text-green-300 border-green-500/30"
+                  >
+                    Live
+                  </Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="bg-stormGray/30 rounded-lg h-64 flex items-center justify-center">
+                <div className="bg-stormGray/30 rounded-lg h-64 flex items-center justify-center backdrop-blur-sm">
                   <div className="text-center text-white/80">
                     <Icon
                       name="Satellite"
@@ -475,7 +499,7 @@ const Index = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4">
+                  <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 backdrop-blur-sm">
                     <div className="flex items-center space-x-2 mb-2">
                       <Icon name="Zap" size={16} className="text-red-400" />
                       <span className="text-red-400 font-semibold">
@@ -486,7 +510,7 @@ const Index = () => {
                       Ожидается сильная гроза с 15:00 до 18:00
                     </p>
                   </div>
-                  <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-4">
+                  <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-4 backdrop-blur-sm">
                     <div className="flex items-center space-x-2 mb-2">
                       <Icon name="Wind" size={16} className="text-yellow-400" />
                       <span className="text-yellow-400 font-semibold">
@@ -611,7 +635,7 @@ const Index = () => {
                   <span className="text-white font-bold">WeatherFlow</span>
                 </div>
                 <p className="text-white/70 text-sm">
-                  Точные прогнозы погоды с анимированными эффектами дождя
+                  Точные прогнозы погоды с реалистичными эффектами дождя
                 </p>
               </div>
               <div>
@@ -660,7 +684,8 @@ const Index = () => {
               </div>
             </div>
             <div className="border-t border-white/20 mt-8 pt-4 text-center text-white/60 text-sm">
-              © 2024 WeatherFlow. Все права защищены.
+              © 2024 WeatherFlow. Все права защищены. • Данные обновляются
+              автоматически
             </div>
           </div>
         </footer>
