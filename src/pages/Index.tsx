@@ -9,13 +9,137 @@ import Icon from "@/components/ui/icon";
 const Index = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [searchCity, setSearchCity] = useState("Москва");
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [weatherData, setWeatherData] = useState({});
 
+  // Auto-refresh every minute
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
     return () => clearInterval(timer);
   }, []);
 
-  const mockWeatherData = {
+  // Simulate data updates every minute
+  useEffect(() => {
+    const dataTimer = setInterval(() => {
+      setWeatherData((prev) => ({
+        ...prev,
+        current: {
+          ...prev.current,
+          temp: prev.current.temp + (Math.random() - 0.5) * 2, // Small temperature fluctuation
+          humidity: Math.max(
+            70,
+            Math.min(95, prev.current.humidity + (Math.random() - 0.5) * 5),
+          ),
+          windSpeed: Math.max(
+            5,
+            Math.min(25, prev.current.windSpeed + (Math.random() - 0.5) * 3),
+          ),
+        },
+      }));
+      setLastUpdated(new Date());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(dataTimer);
+  }, []);
+
+  const RealisticRaindrop = ({
+    delay,
+    duration,
+    type = "drop",
+  }: {
+    delay: number;
+    duration: number;
+    type?: "drop" | "streak" | "drip";
+  }) => {
+    const left = Math.random() * 100;
+    const size = Math.random() * 3 + 1;
+
+    if (type === "streak") {
+      return (
+        <div
+          className="absolute animate-raindrop-streak"
+          style={{
+            left: `${left}%`,
+            animationDelay: `${delay}s`,
+            animationDuration: `${duration}s`,
+          }}
+        >
+          <div
+            className="bg-gradient-to-b from-blue-200/60 via-blue-300/40 to-transparent rounded-full"
+            style={{
+              width: `${size * 0.5}px`,
+              height: `${size * 15}px`,
+              filter: "blur(0.5px)",
+              boxShadow: "0 0 3px rgba(135, 206, 235, 0.3)",
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (type === "drip") {
+      return (
+        <div
+          className="absolute animate-glass-drip"
+          style={{
+            left: `${left}%`,
+            animationDelay: `${delay}s`,
+            animationDuration: `${duration}s`,
+          }}
+        >
+          <div
+            className="bg-gradient-to-b from-blue-300/80 via-blue-200/60 to-blue-100/40"
+            style={{
+              width: `${size * 2}px`,
+              height: `${size * 8}px`,
+              borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%",
+              filter: "blur(0.3px)",
+              boxShadow:
+                "inset 0 1px 2px rgba(255,255,255,0.3), 0 1px 3px rgba(0,0,0,0.1)",
+            }}
+          />
+        </div>
+      );
+    }
+
+    // Regular drop
+    return (
+      <div
+        className="absolute animate-raindrop"
+        style={{
+          left: `${left}%`,
+          animationDelay: `${delay}s`,
+          animationDuration: `${duration}s`,
+        }}
+      >
+        <div
+          className="bg-gradient-to-b from-blue-300/70 via-blue-200/50 to-transparent"
+          style={{
+            width: `${size}px`,
+            height: `${size * 4}px`,
+            borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%",
+            filter: "blur(0.2px)",
+            boxShadow: "0 1px 2px rgba(135, 206, 235, 0.2)",
+          }}
+        />
+      </div>
+    );
+  };
+
+  const getTimeSinceUpdate = () => {
+    const diffMs = new Date().getTime() - lastUpdated.getTime();
+    const diffSeconds = Math.floor(diffMs / 1000);
+
+    if (diffSeconds < 60) {
+      return `${diffSeconds} сек назад`;
+    }
+    const diffMinutes = Math.floor(diffSeconds / 60);
+    return `${diffMinutes} мин назад`;
+  };
+
+  const mockWeatherData = weatherData || {
     current: {
       temp: 18,
       condition: "Дождь",

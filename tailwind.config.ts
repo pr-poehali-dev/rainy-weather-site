@@ -92,18 +92,46 @@ export default {
         },
         raindrop: {
           "0%": {
-            transform: "translateY(-100vh) rotate(0deg)",
+            transform: "translateY(-20px)",
             opacity: "0",
           },
-          "10%": {
-            opacity: "1",
-          },
-          "90%": {
+          "5%": {
             opacity: "1",
           },
           "100%": {
-            transform: "translateY(100vh) rotate(360deg)",
+            transform: "translateY(100vh)",
+            opacity: "0.3",
+          },
+        },
+        "raindrop-streak": {
+          "0%": {
+            transform: "translateY(-10px) scaleY(0)",
             opacity: "0",
+          },
+          "10%": {
+            transform: "translateY(0px) scaleY(1)",
+            opacity: "0.8",
+          },
+          "90%": {
+            opacity: "0.6",
+          },
+          "100%": {
+            transform: "translateY(100vh) scaleY(2)",
+            opacity: "0",
+          },
+        },
+        "glass-drip": {
+          "0%": {
+            transform: "translateY(0) scaleX(1)",
+            opacity: "0.9",
+          },
+          "20%": {
+            transform: "translateY(10px) scaleX(0.8)",
+            opacity: "0.8",
+          },
+          "100%": {
+            transform: "translateY(100vh) scaleX(0.3)",
+            opacity: "0.2",
           },
         },
         float: {
@@ -118,7 +146,9 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        raindrop: "raindrop 3s linear infinite",
+        raindrop: "raindrop 4s ease-in infinite",
+        "raindrop-streak": "raindrop-streak 3s ease-in infinite",
+        "glass-drip": "glass-drip 6s ease-out infinite",
         float: "float 3s ease-in-out infinite",
       },
     },
